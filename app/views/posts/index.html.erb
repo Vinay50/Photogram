@@ -1,1 +1,4 @@
-<h2>Hello! This is root path</h2>
+<% @posts.each do |post| %>
+  Caption:<%= post.caption %>
+  Picture:<%= image_tag post.image.url(:medium)%>
+<% end %>
