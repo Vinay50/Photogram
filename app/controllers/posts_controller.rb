@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+	before_action :find_post, :only => [:show, :destroy, :edit, :update]
 	def index
 		@posts = Post.all
 	end
@@ -8,7 +9,6 @@ class PostsController < ApplicationController
 	end
 
 	def create
-		#@post = Post.create(posts_params)
 		@post = Post.new(posts_params)
 		if @post.save
 			redirect_to @post
@@ -18,16 +18,25 @@ class PostsController < ApplicationController
 	end
 
 	def show
-		@post = Post.find(params[:id])
 	end
 
 	def edit
 	end
 
 	def update
+		if @post.update(posts_params)
+			redirect_to post_path(@post)
+	  else
+	    "edit"
+	  end  		
 	end
 
 	def destroy
+		if @post.destroy
+			redirect_to posts_path
+	  else
+	   flash[:error] = "could not delete the photo"
+	  end 		
 	end
 
 	private 
@@ -35,5 +44,9 @@ class PostsController < ApplicationController
 	def posts_params
 		params.require(:post).permit(:image, :caption)
 	end
-	
+
+	def find_post
+		@post = Post.find(params[:id])
+	end
+
 end
