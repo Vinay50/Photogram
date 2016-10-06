@@ -14,7 +14,7 @@ class PostsController < ApplicationController
 			flash[:success] ="Your post has been created!"
 			redirect_to @post
 	  else
-      flash.now[:alert] ="your post could not be created! Please check the form"
+      flash.now[:alert] ="Your post could not be created! Please check the form"
 	    render :new
 	  end	
 	end
