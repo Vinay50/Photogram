@@ -1,6 +1,7 @@
 class PostsController < ApplicationController
 	before_action :find_post, :only => [:show, :destroy, :edit, :update]
-	before_action :authenticate_user!  
+	before_action :authenticate_user! , :only => [:create, :new, :destroy, :edit, :update]
+	before_action :owned_post, only: [:edit, :update, :destroy]  
 	def index
 		@posts = Post.all
 	end
@@ -49,6 +50,13 @@ class PostsController < ApplicationController
 	def posts_params
 		params.require(:post).permit(:image, :caption)
 	end
+
+	def owned_post  
+	  unless current_user == @post.user
+	    flash[:alert] = "That post doesn't belong to you!"
+	    redirect_to root_path
+	  end
+  end  
 
 	def find_post
 		@post = Post.find(params[:id])
