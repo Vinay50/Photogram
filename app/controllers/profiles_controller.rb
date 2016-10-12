@@ -1,16 +1,17 @@
 class ProfilesController < ApplicationController
+	before_action :owned_profile, only: [:edit, :update]
+	before_action  :authenticate_user! 
+	before_action :set_user
+
 	def show
 	  	@posts = User.find_by(username: params[:username]).posts.order("created_at DESC")
-	  	@user = User.find_by(username: params[:username])
 	end
 
 	def edit
-	 	@user = User.find_by(username: params[:username])
 	end
 
 	def update
-	 	@user = User.find_by(username:params[:username])
-	 	 if@user.update(user_profile)
+	 	if@user.update(user_profile)
 	 	 	flash[:success] = "Your profile has been updated"
 	 	 	redirect_to profile_path(@user.username)
 	 	else
@@ -21,7 +22,19 @@ class ProfilesController < ApplicationController
 
 	private
 
-	def profile_params  
-	  params.require(:user).permit(:avatar, :bio)
+      def set_user  
+            @user = User.find_by(username: params[:username])
+       end
+
+      def owned_profile  
+      	     @user = User.find_by(username: params[:username])
+	      unless current_user == @user
+	           flash[:alert] = "That profile doesn't belong to you!"
+	           redirect_to root_path
+	    end
+      end
+
+	def user_profile  
+	 	params.require(:user).permit(:avatar, :bio)
 	end  
 end

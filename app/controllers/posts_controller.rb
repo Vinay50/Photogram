@@ -1,7 +1,8 @@
 class PostsController < ApplicationController
-	before_action :find_post, :only => [:show, :destroy, :edit, :update]
+	before_action :find_post, :only => [:show, :destroy, :edit, :update, :like]
 	before_action :authenticate_user! , :only => [:create, :new, :destroy, :edit, :update]
 	before_action :owned_post, only: [:edit, :update, :destroy]  
+
 
 	def index
 		@posts = Post.all.order('created_at DESC').page params[:page]
@@ -45,7 +46,16 @@ class PostsController < ApplicationController
 	   		flash.now[:alert] ="Your post could not be created! Please check the form"
 	  	end 		
 	end
-  
+     
+      def like
+	      	if @post.liked_by current_user
+	      		respond_to do |format|
+	      			format.html { redirect_to :back}
+	      			format.js
+	      		end
+	      end
+	end
+
 	private 
 
 	def posts_params

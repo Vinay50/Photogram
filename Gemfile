@@ -16,6 +16,7 @@ gem 'bootstrap-sass', '~> 3.3.5'
 gem 'devise'
 gem 'kaminari', '~> 0.16.3' 
 gem 'jquery-turbolinks'
+gem 'acts_as_votable', '~> 0.10.0'
 
 
 group :development do
