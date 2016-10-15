@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-	before_action :find_post, :only => [:show, :destroy, :edit, :update, :like]
+	before_action :find_post, :only => [:show, :destroy, :edit, :update, :like,:unlike]
 	before_action :authenticate_user! , :only => [:create, :new, :destroy, :edit, :update]
 	before_action :owned_post, only: [:edit, :update, :destroy]  
 
@@ -46,15 +46,26 @@ class PostsController < ApplicationController
 	   		flash.now[:alert] ="Your post could not be created! Please check the form"
 	  	end 		
 	end
-     
-      def like
-	      	if @post.liked_by current_user
-	      		respond_to do |format|
-	      			format.html { redirect_to :back}
-	      			format.js
-	      		end
-	      end
+
+	def unlike
+		if @post.unliked_by current_user
+			respond_to do |format|
+				format.js
+				format.html { redirect_to :back}
+		      end
+		end     		
 	end
+
+     
+	def like
+	    if @post.liked_by current_user
+	      # create_notification @post
+	        respond_to do |format|
+	          format.js
+	          format.html { redirect_to :back }
+	      end
+	    end
+  end
 
 	private 
 
